@@ -3,12 +3,6 @@ struct Entries { mut payer: Address, mut payee: Address, mut agent: Address, mut
 Contract Funnel(mut count: U256) {
 
 	mapping[U256, Entries] entries
-	mapping[Address, U256] donor_counts
-    	mapping[ByteVec, Entries] patrons  // bytevec = fid ++ Address ++ U256
-    	mapping[Address, U256] donation_counts 
-        mapping[ByteVec, Entries] payments // where bytevec = encode(Address) ++ encode(U256)
-        mapping[Address, U256] agent_counts
-        mapping[ByteVec, Address] agents
         
 
 
@@ -23,33 +17,6 @@ Contract Funnel(mut count: U256) {
     }
 
     
-    pub fn getDonations() -> U256 {
-        return counter
-    }
-
-    pub fn getLastCaller() -> Address {
-        if (count == 0){
-            let null_add = nullContractAddress!()
-            return null_add
-        }
-        else {
-            let et = counter_usages[count]
-            return et.caller
-        }
-    }
-
-    pub fn getLastFiveChanges() -> [U256; 5]{
-        let mut arr = [0, 0, 0, 0, 0]
-        let mut i = count
-        let mut j = 4
-        while (i > 0 && j >= 0){
-            let et = counter_usages[i]
-            arr[j] = et.ts
-            i = i - 1
-            j = j - 1
-        }
-        return arr
-    }
 
     
     @using(updateFields = true, checkExternalCaller = false, preapprovedAssets = true)
@@ -57,91 +24,28 @@ Contract Funnel(mut count: U256) {
         // Debug events can be helpful for error analysis
         emit Debug(`Running Create Entry`)
 
-	let add = callerAddress!()
+        let add = callerAddress!()
         assert!(add != to, ErrorCodes.SelfPay)
         assert!(add != ag, ErrorCodes.AgentPay)
         
         assert!(!entries.contains!(count + 1), ErrorCodes.DataMalfunction)
+        
+        let b1 = tokenRemaining!(add, ALPH)
+        transferTokenToSelf!(add, ALPH, 100000000000000000 * amt)
+        let b2 = tokenRemaining!(add, ALPH)
+        assert!(b1 == b2 + 100000000000000000 * amt, ErrorCodes.LackOfBal)
+        transferTokenFromSelf!(to, ALPH, 10000000000000000 * 9 * amt)
+        transferTokenFromSelf!(ag, ALPH, 10000000000000000 * amt)
 
         let timestamp = blockTimeStamp!()
         let et = Entries { payer : add, payee: to, agent: ag, amount: amt, ts: timestamp }
 
         entries.insert!(add, count + 1, et)
-        let mut dcount = 0
-        let mut dncount = 0
-        let mut acount = 0
-        if (donor_counts.contains!(to)){
-        	dcount = donor_counts[to]
-        	donor_counts[to] = dcount + 1
-        	let pval = encode(to) ++ encode(dcount + 1)
-        	patrons.insert!(add, pval, et)
-        }
-        else {
-        	donor_counts.insert!(add, to, 1)
-        	let pval = encode(to) ++ encode(1)
-        	patrons.insert!(add, pval, et)
-        }
-        if (donation_counts.contains!(add)){
-        	dncount = donation_counts[add]
-        	donation_counts[add] = dncount + 1
-        	let payval = encode(add) ++ encode(dncount + 1)
-        	payments.insert!(add, payval, et)
-        }
-        else {
-        	donation_counts.insert!(add, add, 1)
-        	let payval = encode(add) ++ encode(1)
-        	payments.insert!(add, payval, et)
-        }
-        if (agent_counts.contains!(to)){
-        	acount = agent_counts[to]
-        	let mut i = 1
-        	let mut flag = false
-        	let mut current = encode(to) ++ encode(1)
-        	while (agents.contains!(current)){
-        		if (agents[current] == ag) {
-        			flag = true
-        		}
-        		current = encode(to) ++ encode(1 + i)
-        		i = i + 1
-        	}
-        	if (!flag) {
-        		agent_counts[to] = acount + 1
-        		let aval = encode(to) ++ encode(acount + 1)
-        		agents.insert!(add, aval, ag)
-        	}
-        	
-        }
-        else {
-        	agent_counts.insert!(add, to, 1)
-        	let aval = encode(to) ++ encode(1)
-        	agents.insert!(add, aval, agent)
-        }
 
         count = count + 1
 
         emit NewEntry(add, to, agent, amt)
     }
 
-     @using(updateFields = true, checkExternalCaller = false, preapprovedAssets = true, assetsInContract = true)
-    pub fn resetCounter() -> () {
-        // Debug events can be helpful for error analysis
-        emit Debug(`The current counter value is ${counter}`)
 
-
-        assert!(counter != 0, ErrorCodes.AlreadyNil)
-	
-        // Charge the resetting fee
-        let add = callerAddress!()
-        let b1 = tokenRemaining!(add, ALPH)
-        transferTokenToSelf!(add, ALPH, 100000000000000000)
-	let b2 = tokenRemaining!(add, ALPH)
-	assert!(b1 == b2 + 100000000000000000, ErrorCodes.LackOfBal)
-	
-        counter = 0
-
-
-
-        // Emit the event defined earlier.
-        emit Reset(add)
-    }
 }
