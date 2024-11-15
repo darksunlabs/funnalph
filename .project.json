@@ -1,0 +1,27 @@
+{
+  "fullNodeVersion": "v3.8.4",
+  "compilerOptionsUsed": {
+    "ignoreUnusedConstantsWarnings": false,
+    "ignoreUnusedVariablesWarnings": false,
+    "ignoreUnusedFieldsWarnings": false,
+    "ignoreUnusedPrivateFunctionsWarnings": false,
+    "ignoreUpdateFieldsCheckWarnings": false,
+    "ignoreCheckExternalCallerWarnings": false,
+    "ignoreUnusedFunctionReturnWarnings": false,
+    "skipAbstractContractCheck": false
+  },
+  "infos": {
+    "Entries": {
+      "sourceFile": "funnel.ral",
+      "sourceCodeHash": "fad78eb8012c19953a4314909021f66b3991f097924a9bdb559e0c179a3af837",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": ""
+    },
+    "Funnel": {
+      "sourceFile": "funnel.ral",
+      "sourceCodeHash": "fad78eb8012c19953a4314909021f66b3991f097924a9bdb559e0c179a3af837",
+      "bytecodeDebugPatch": "=6-1+f=13-2+61=10+7e011452756e6e696e672043726561746520456e747279=330+7a7e0214696e73657274206174206d617020706174683a2000=60",
+      "codeHashDebug": "16cb8b0d99ad3780227ac3c20f199e71ce8a8372f2fbf0fd0db27b46c2fa2264"
+    }
+  }
+}

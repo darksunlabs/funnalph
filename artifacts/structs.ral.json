@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Entries",
+    "fieldNames": [
+      "payer",
+      "payee",
+      "agent",
+      "amount",
+      "ts"
+    ],
+    "fieldTypes": [
+      "Address",
+      "Address",
+      "Address",
+      "U256",
+      "U256"
+    ],
+    "isMutable": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ]
+  }
+]

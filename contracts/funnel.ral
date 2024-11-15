@@ -11,15 +11,14 @@ Contract Funnel(mut count: U256) {
     enum ErrorCodes {
         SelfPay = 0
         AgentPay = 1
-        InvalidAgent = 2
-        DataMalfunction = 3
-        LackOfBal = 4
+        DataMalfunction = 2
+        LackOfBal = 3
     }
 
     
 
     
-    @using(updateFields = true, checkExternalCaller = false, preapprovedAssets = true)
+    @using(updateFields = true, checkExternalCaller = false, preapprovedAssets = true, assetsInContract = true)
     pub fn createEntry(amt: U256, to: Address, ag: Address) -> () {
         // Debug events can be helpful for error analysis
         emit Debug(`Running Create Entry`)
@@ -44,7 +43,7 @@ Contract Funnel(mut count: U256) {
 
         count = count + 1
 
-        emit NewEntry(add, to, agent, amt)
+        emit NewEntry(add, to, ag, amt)
     }
 
 
