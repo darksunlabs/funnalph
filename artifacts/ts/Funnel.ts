@@ -42,6 +42,9 @@ import { RalphMap } from "@alephium/web3";
 export namespace FunnelTypes {
   export type Fields = {
     count: bigint;
+    raffle: bigint;
+    reward: bigint;
+    lastrun: bigint;
   };
 
   export type State = ContractState<Fields>;
@@ -52,10 +55,30 @@ export namespace FunnelTypes {
     agent: Address;
     value: bigint;
   }>;
+  export type NewRaffleEvent = ContractEvent<{
+    by: Address;
+    winner: Address;
+    amount: bigint;
+    timestamp: bigint;
+  }>;
+  export type NewRewardEvent = ContractEvent<{
+    by: Address;
+    winnder: Address;
+    amount: bigint;
+    timestamp: bigint;
+  }>;
 
   export interface CallMethodTable {
     createEntry: {
       params: CallContractParams<{ amt: bigint; to: Address; ag: Address }>;
+      result: CallContractResult<null>;
+    };
+    raffleDist: {
+      params: Omit<CallContractParams<{}>, "args">;
+      result: CallContractResult<null>;
+    };
+    rewardDist: {
+      params: Omit<CallContractParams<{}>, "args">;
       result: CallContractResult<null>;
     };
   }
@@ -84,6 +107,14 @@ export namespace FunnelTypes {
       }>;
       result: SignExecuteScriptTxResult;
     };
+    raffleDist: {
+      params: Omit<SignExecuteContractMethodParams<{}>, "args">;
+      result: SignExecuteScriptTxResult;
+    };
+    rewardDist: {
+      params: Omit<SignExecuteContractMethodParams<{}>, "args">;
+      result: SignExecuteScriptTxResult;
+    };
   }
   export type SignExecuteMethodParams<T extends keyof SignExecuteMethodTable> =
     SignExecuteMethodTable[T]["params"];
@@ -102,13 +133,17 @@ class Factory extends ContractFactory<FunnelInstance, FunnelTypes.Fields> {
     );
   }
 
-  eventIndex = { NewEntry: 0 };
+  eventIndex = { NewEntry: 0, NewRaffle: 1, NewReward: 2 };
   consts = {
     ErrorCodes: {
       SelfPay: BigInt("0"),
       AgentPay: BigInt("1"),
       DataMalfunction: BigInt("2"),
       LackOfBal: BigInt("3"),
+      NoneEligible: BigInt("4"),
+      RaffleLow: BigInt("5"),
+      RewardLow: BigInt("6"),
+      OngoingCycle: BigInt("7"),
     },
   };
 
@@ -126,6 +161,22 @@ class Factory extends ContractFactory<FunnelInstance, FunnelTypes.Fields> {
     ): Promise<TestContractResult<null, FunnelTypes.Maps>> => {
       return testMethod(this, "createEntry", params, getContractByCodeHash);
     },
+    raffleDist: async (
+      params: Omit<
+        TestContractParams<FunnelTypes.Fields, never, FunnelTypes.Maps>,
+        "testArgs"
+      >
+    ): Promise<TestContractResult<null, FunnelTypes.Maps>> => {
+      return testMethod(this, "raffleDist", params, getContractByCodeHash);
+    },
+    rewardDist: async (
+      params: Omit<
+        TestContractParams<FunnelTypes.Fields, never, FunnelTypes.Maps>,
+        "testArgs"
+      >
+    ): Promise<TestContractResult<null, FunnelTypes.Maps>> => {
+      return testMethod(this, "rewardDist", params, getContractByCodeHash);
+    },
   };
 
   stateForTest(
@@ -142,8 +193,8 @@ class Factory extends ContractFactory<FunnelInstance, FunnelTypes.Fields> {
 export const Funnel = new Factory(
   Contract.fromJson(
     FunnelContractJson,
-    "=6-1+f=13-2+61=10+7e011452756e6e696e672043726561746520456e747279=330+7a7e0214696e73657274206174206d617020706174683a2000=60",
-    "16cb8b0d99ad3780227ac3c20f199e71ce8a8372f2fbf0fd0db27b46c2fa2264",
+    "=5-2+12=3-2+f0=2-2+75=13-1+f=10+7e011452756e6e696e672043726561746520456e747279=336+7a7e0214696e73657274206174206d617020706174683a2000=141-1+7=10+7e011b52756e6e696e6720526166666c6520446973747269627574696f6e=337-1+c=10+7e011b52756e6e696e672052657761726420446973747269627574696f6e=694",
+    "c600f02c659194f0de1db762cba5d0eeb809978c0cb478878b2f0f2ccf4eb7e3",
     AllStructs
   )
 );
@@ -184,6 +235,43 @@ export class FunnelInstance extends ContractInstance {
     );
   }
 
+  subscribeNewRaffleEvent(
+    options: EventSubscribeOptions<FunnelTypes.NewRaffleEvent>,
+    fromCount?: number
+  ): EventSubscription {
+    return subscribeContractEvent(
+      Funnel.contract,
+      this,
+      options,
+      "NewRaffle",
+      fromCount
+    );
+  }
+
+  subscribeNewRewardEvent(
+    options: EventSubscribeOptions<FunnelTypes.NewRewardEvent>,
+    fromCount?: number
+  ): EventSubscription {
+    return subscribeContractEvent(
+      Funnel.contract,
+      this,
+      options,
+      "NewReward",
+      fromCount
+    );
+  }
+
+  subscribeAllEvents(
+    options: EventSubscribeOptions<
+      | FunnelTypes.NewEntryEvent
+      | FunnelTypes.NewRaffleEvent
+      | FunnelTypes.NewRewardEvent
+    >,
+    fromCount?: number
+  ): EventSubscription {
+    return subscribeContractEvents(Funnel.contract, this, options, fromCount);
+  }
+
   view = {
     createEntry: async (
       params: FunnelTypes.CallMethodParams<"createEntry">
@@ -196,6 +284,28 @@ export class FunnelInstance extends ContractInstance {
         getContractByCodeHash
       );
     },
+    raffleDist: async (
+      params?: FunnelTypes.CallMethodParams<"raffleDist">
+    ): Promise<FunnelTypes.CallMethodResult<"raffleDist">> => {
+      return callMethod(
+        Funnel,
+        this,
+        "raffleDist",
+        params === undefined ? {} : params,
+        getContractByCodeHash
+      );
+    },
+    rewardDist: async (
+      params?: FunnelTypes.CallMethodParams<"rewardDist">
+    ): Promise<FunnelTypes.CallMethodResult<"rewardDist">> => {
+      return callMethod(
+        Funnel,
+        this,
+        "rewardDist",
+        params === undefined ? {} : params,
+        getContractByCodeHash
+      );
+    },
   };
 
   transact = {
@@ -203,6 +313,16 @@ export class FunnelInstance extends ContractInstance {
       params: FunnelTypes.SignExecuteMethodParams<"createEntry">
     ): Promise<FunnelTypes.SignExecuteMethodResult<"createEntry">> => {
       return signExecuteMethod(Funnel, this, "createEntry", params);
+    },
+    raffleDist: async (
+      params: FunnelTypes.SignExecuteMethodParams<"raffleDist">
+    ): Promise<FunnelTypes.SignExecuteMethodResult<"raffleDist">> => {
+      return signExecuteMethod(Funnel, this, "raffleDist", params);
+    },
+    rewardDist: async (
+      params: FunnelTypes.SignExecuteMethodParams<"rewardDist">
+    ): Promise<FunnelTypes.SignExecuteMethodResult<"rewardDist">> => {
+      return signExecuteMethod(Funnel, this, "rewardDist", params);
     },
   };
 }

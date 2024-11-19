@@ -1,16 +1,25 @@
 {
-  "version": "v3.8.0",
+  "version": "v3.8.4",
   "name": "Funnel",
-  "bytecode": "010140cf0101030c00405ed3455b48eeb4170316031601460c7b16031602460d7b140a5f5f6d61705f5f305f5fa0000d2a4044cbc5190e7b1603a41704160313c4016345785d8a000016002ca91603a417051604160513c4016345785d8a000016002c2a2f0f7b160113c32386f26fc1000013092c16002ca8160213c32386f26fc1000016002ca856170616031601160216001606170b170a1709170817071603d1a2140a5f5f6d61705f5f305f5fa0000d2a4044b1160716081609160a160bd20105a0000d2aa10005160316011602160061",
-  "codeHash": "ad16183e7131f661ddd3832faea232d2f891476ae320cd873a35a374e9a19454",
+  "bytecode": "040340f441a243090101030c00406cd3455b48eeb4170316031601460c7b16031602460d7b140a5f5f6d61705f5f305f5fa0000d2a4044cbc5190e7b1603a41704160313c4016345785d8a000016002ca91603a417051604160513c4016345785d8a000016002c2a2f0f7b160113c32386f26fc1000013092c16002ca8160213c3038d7ea4c6800013092c16002ca856170616031601160216001606170b170a1709170817071603d1a2140a5f5f6d61705f5f305f5fa0000d2a4044b1160716081609160a160bd20105a0000d2aa100a00113c301c6bf5263400016002c2aa101a00213c301c6bf5263400016002c2aa102051603160116021600610101000a004056d3c857a916a00113c4016345785d8a000033117b140a5f5f6d61705f5f305f5fa0004044cbc50e7ba0000c33107b5617001600a0002e0d2a1701140a5f5f6d61705f5f305f5f16014044cbc50e7b0c0d0d140a5f5f6d61705f5f305f5f16014044cb1709160901010d0d0d160901010e0d0d160901010f0d0d16090101100d0d1609010117061705170417031702160417071607a001a8b417080616081607a0011600610ca101010100130040bbd358357f4ba00213c4016345785d8a00003313067b140a5f5f6d61705f5f305f5fa0004044cbc50e7ba0031343e82a1700a00016003413077b5617010c17020c1703a0030d2a17040c17050c0d0d140a5f5f6d61705f5f305f5f16044044cb1712161201010d0d0d161201010e0d0d161201010f0d0d16120101100d0d16120101170a170917081707170616041600324c403b140a5f5f6d61705f5f305f5f16044044cbc50e7b0c0d0d140a5f5f6d61705f5f305f5f16044044cb1712161201010d0d0d161201010e0d0d161201010f0d0d16120101100d0d16120101170a17091708170717061609170516051603334c04160517031604170216040d2a17044a7fc10c0d0d140a5f5f6d61705f5f305f5f16024044cb1712161201010d0d0d161201010e0d0d161201010f0d0d16120101100d0d16120101170f170e170d170c170b160d17101610a002a81600a103b417110716111610a0021601610ca102",
+  "codeHash": "8da94c101566073b13dd3bc833c68798b517ba5171b88e9c5f95359c83ef6cd7",
   "fieldsSig": {
     "names": [
-      "count"
+      "count",
+      "raffle",
+      "reward",
+      "lastrun"
     ],
     "types": [
+      "U256",
+      "U256",
+      "U256",
       "U256"
     ],
     "isMutable": [
+      true,
+      true,
+      true,
       true
     ]
   },
@@ -27,6 +36,36 @@
         "Address",
         "Address",
         "Address",
+        "U256"
+      ]
+    },
+    {
+      "name": "NewRaffle",
+      "fieldNames": [
+        "by",
+        "winner",
+        "amount",
+        "timestamp"
+      ],
+      "fieldTypes": [
+        "Address",
+        "Address",
+        "U256",
+        "U256"
+      ]
+    },
+    {
+      "name": "NewReward",
+      "fieldNames": [
+        "by",
+        "winnder",
+        "amount",
+        "timestamp"
+      ],
+      "fieldTypes": [
+        "Address",
+        "Address",
+        "U256",
         "U256"
       ]
     }
@@ -49,6 +88,20 @@
         false,
         false
       ],
+      "returnTypes": []
+    },
+    {
+      "name": "raffleDist",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": []
+    },
+    {
+      "name": "rewardDist",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
       "returnTypes": []
     }
   ],
@@ -83,6 +136,34 @@
           "value": {
             "type": "U256",
             "value": "3"
+          }
+        },
+        {
+          "name": "NoneEligible",
+          "value": {
+            "type": "U256",
+            "value": "4"
+          }
+        },
+        {
+          "name": "RaffleLow",
+          "value": {
+            "type": "U256",
+            "value": "5"
+          }
+        },
+        {
+          "name": "RewardLow",
+          "value": {
+            "type": "U256",
+            "value": "6"
+          }
+        },
+        {
+          "name": "OngoingCycle",
+          "value": {
+            "type": "U256",
+            "value": "7"
           }
         }
       ]

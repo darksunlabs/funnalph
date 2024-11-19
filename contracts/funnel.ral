@@ -1,18 +1,24 @@
 struct Entries { mut payer: Address, mut payee: Address, mut agent: Address, mut amount: U256, mut ts: U256 }
 
-Contract Funnel(mut count: U256) {
+Contract Funnel(mut count: U256, mut raffle: U256, mut reward: U256, mut lastrun: U256 ) {
 
 	mapping[U256, Entries] entries
         
 
 
     event NewEntry(by: Address, to: Address, agent: Address, value: U256)
+    event NewRaffle(by: Address, winner: Address, amount: U256, timestamp: U256)
+    event NewReward(by: Address, winnder: Address, amount: U256, timestamp: U256)
 
     enum ErrorCodes {
         SelfPay = 0
         AgentPay = 1
         DataMalfunction = 2
         LackOfBal = 3
+        NoneEligible = 4
+        RaffleLow = 5
+        RewardLow = 6
+        OngoingCycle = 7
     }
 
     
@@ -34,7 +40,7 @@ Contract Funnel(mut count: U256) {
         let b2 = tokenRemaining!(add, ALPH)
         assert!(b1 == b2 + 100000000000000000 * amt, ErrorCodes.LackOfBal)
         transferTokenFromSelf!(to, ALPH, 10000000000000000 * 9 * amt)
-        transferTokenFromSelf!(ag, ALPH, 10000000000000000 * amt)
+        transferTokenFromSelf!(ag, ALPH, 1000000000000000 * 9 * amt)
 
         let timestamp = blockTimeStamp!()
         let et = Entries { payer : add, payee: to, agent: ag, amount: amt, ts: timestamp }
@@ -42,8 +48,74 @@ Contract Funnel(mut count: U256) {
         entries.insert!(add, count + 1, et)
 
         count = count + 1
-
+	raffle = raffle + (500000000000000 * amt)
+	reward = reward + (500000000000000 * amt)
         emit NewEntry(add, to, ag, amt)
+    }
+    
+    @using(updateFields = true, checkExternalCaller = false, preapprovedAssets = true, assetsInContract = true)
+    pub fn raffleDist() -> () {
+        // Debug events can be helpful for error analysis
+        emit Debug(`Running Raffle Distribution`)
+
+        assert!(raffle > 100000000000000000, ErrorCodes.RaffleLow)
+        assert!(entries.contains!(count), ErrorCodes.DataMalfunction)
+        assert!(count > 0, ErrorCodes.NoneEligible)
+        
+        let timestamp = blockTimeStamp!()
+        let winning_index = (timestamp % count) + 1
+        
+        assert!(entries.contains!(winning_index), ErrorCodes.DataMalfunction)
+        let et = entries[winning_index]
+        let winner = et.agent
+
+        transferTokenFromSelf!(winner, ALPH, raffle)
+	
+	let add = callerAddress!()
+        emit NewRaffle(add, winner, raffle, timestamp)
+        raffle = 0
+    }
+    
+    @using(updateFields = true, checkExternalCaller = false, preapprovedAssets = true, assetsInContract = true)
+    pub fn rewardDist() -> () {
+        // Debug events can be helpful for error analysis
+        emit Debug(`Running Reward Distribution`)
+
+        assert!(reward > 100000000000000000, ErrorCodes.RewardLow)
+        assert!(entries.contains!(count), ErrorCodes.DataMalfunction)
+        
+        let run_end = lastrun + 1000
+        assert!(count >= run_end, ErrorCodes.OngoingCycle)
+        
+        let timestamp = blockTimeStamp!()
+        let mut winning_index = 0
+        let mut winning_amount = 0
+        
+        let mut i = lastrun + 1
+        let mut a = 0
+        let mut et = entries[i]
+        
+        while (i <= run_end) {
+        	assert!(entries.contains!(i), ErrorCodes.DataMalfunction)
+        	et = entries[i]
+        	a = et.amount
+        	if (a > winning_amount){
+        		winning_amount = a
+        		winning_index = i
+        	}
+        	i = i + 1
+        }
+        
+        
+        let winner_entry = entries[winning_index]
+        let winner = winner_entry.agent
+
+        transferTokenFromSelf!(winner, ALPH, reward)
+	
+	lastrun = run_end
+	let add = callerAddress!()
+        emit NewReward(add, winner, reward, timestamp)
+        reward = 0
     }
 
 

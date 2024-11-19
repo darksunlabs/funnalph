@@ -80,8 +80,8 @@ async function new_entry() {
     const funnel = Funnel.at(funnelContractAddress)
     await funnel.transact.createEntry({
     	signer: wallet,
-   	args: { amt: 1n, to: '12sxfxraVoU8FcSVd7P2SVr2cd2vi8d17KtrprrL7cBbV', ag: '12sxfxraVoU8FcSVd7P2SVr2cd2vi8d17KtrprrL7cBbV'},
-   	attoAlphAmount: ONE_ALPH + DUST_AMOUNT
+   	args: { amt: 1n, to: '1KMwDH1yqkK51jLBmWWAS5NwbLa59sEoyhanTtXRwgUU', ag: '1KMwDH1yqkK51jLBmWWAS5NwbLa59sEoyhanTtXRwgUU',},
+   	attoAlphAmount:  ONE_ALPH + DUST_AMOUNT
    })
 	//100000000000000000
 	//1000000000000000
@@ -95,6 +95,6 @@ async function new_entry() {
 
 
 // Let's perform one operation at a time while commenting the others out
-//display_count()
-new_entry()
+display_count()
+//new_entry()
 

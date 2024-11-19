@@ -12,7 +12,10 @@ const deployFunnel: DeployFunction<Settings> = async (
     
     // The initial state of the hello contract
     initialFields: {
-      count: 0n
+      count: 0n,
+      raffle: 0n,
+      reward: 0n,
+      lastrun: 0n
     }
   })
   console.log('Funnel contract id: ' + result.contractInstance.contractId)
