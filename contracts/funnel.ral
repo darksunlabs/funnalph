@@ -8,7 +8,7 @@ Contract Funnel(mut count: U256, mut raffle: U256, mut reward: U256, mut lastrun
 
     event NewEntry(by: Address, to: Address, agent: Address, value: U256)
     event NewRaffle(by: Address, winner: Address, amount: U256, timestamp: U256)
-    event NewReward(by: Address, winnder: Address, amount: U256, timestamp: U256)
+    event NewReward(by: Address, winner: Address, amount: U256, timestamp: U256)
 
     enum ErrorCodes {
         SelfPay = 0
@@ -63,7 +63,8 @@ Contract Funnel(mut count: U256, mut raffle: U256, mut reward: U256, mut lastrun
         assert!(count > 0, ErrorCodes.NoneEligible)
         
         let timestamp = blockTimeStamp!()
-        let winning_index = (timestamp % count) + 1
+        let pseudorandom = timestamp + raffle 
+        let winning_index = (pseudorandom % count) + 1
         
         assert!(entries.contains!(winning_index), ErrorCodes.DataMalfunction)
         let et = entries[winning_index]
