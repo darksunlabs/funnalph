@@ -1,6 +1,6 @@
 struct Entries { mut payer: Address, mut payee: Address, mut agent: Address, mut amount: U256, mut ts: U256 }
 
-Contract Funnel(mut count: U256, mut raffle: U256, mut reward: U256, mut lastrun: U256 ) {
+Contract Funnel(mut count: U256, mut raffle: U256, mut reward: U256, mut lastrun: U256, mut leadingentry: U256, mut leadingamount: U256 ) {
 
 	mapping[U256, Entries] entries
         
@@ -51,6 +51,11 @@ Contract Funnel(mut count: U256, mut raffle: U256, mut reward: U256, mut lastrun
 	raffle = raffle + (500000000000000 * amt)
 	reward = reward + (500000000000000 * amt)
         emit NewEntry(add, to, ag, amt)
+        
+        if (amt > leadingamount) {
+        	leadingentry = count
+        	leadingamount = amt
+        }
     }
     
     @using(updateFields = true, checkExternalCaller = false, preapprovedAssets = true, assetsInContract = true)
@@ -88,35 +93,19 @@ Contract Funnel(mut count: U256, mut raffle: U256, mut reward: U256, mut lastrun
         let run_end = lastrun + 1000
         assert!(count >= run_end, ErrorCodes.OngoingCycle)
         
+        let reward_part = (reward * 1000) / (count - lastrun)
         let timestamp = blockTimeStamp!()
-        let mut winning_index = 0
-        let mut winning_amount = 0
-        
-        let mut i = lastrun + 1
-        let mut a = 0
-        let mut et = entries[i]
-        
-        while (i <= run_end) {
-        	assert!(entries.contains!(i), ErrorCodes.DataMalfunction)
-        	et = entries[i]
-        	a = et.amount
-        	if (a > winning_amount){
-        		winning_amount = a
-        		winning_index = i
-        	}
-        	i = i + 1
-        }
-        
-        
-        let winner_entry = entries[winning_index]
-        let winner = winner_entry.agent
+        let et = entries[leadingentry]
+        let winner = et.agent
 
-        transferTokenFromSelf!(winner, ALPH, reward)
+        transferTokenFromSelf!(winner, ALPH, reward_part)
 	
 	lastrun = run_end
 	let add = callerAddress!()
-        emit NewReward(add, winner, reward, timestamp)
-        reward = 0
+        emit NewReward(add, winner, reward_part, timestamp)
+        reward = reward - reward_part
+        leadingentry = 0
+        leadingamount = 0
     }
 
 

@@ -23,7 +23,9 @@ describe('unit tests', () => {
         count: 0n,
         raffle: 0n,
         reward: 0n,
-        lastrun: 0n
+        lastrun: 0n,
+        leadingentry: 0n,
+        leadingamount: 0n
       },
       // arguments to test the target function of the test contract
       testArgs: { amt: 2n, to: '18PtRKysjGKNQJijidydDH6bmJeks2YaaLr8KhMdacAnW', ag: '14cLiRion2B2H1aFBbyPraNvWz1SUufiU2cgmWiqBNyAY' },
@@ -35,6 +37,8 @@ describe('unit tests', () => {
     
     const contractState0 = testResult.contracts[0] as FunnelTypes.State
     expect(contractState0.fields.count).toEqual(1n)
+    expect(contractState0.fields.leadingentry).toEqual(1n)
+    expect(contractState0.fields.leadingamount).toEqual(2n)
     //console.log(contractState0.mappings.entries[1n])
   }),
   it('Checks for Raffle Reward', async () => {
@@ -53,7 +57,9 @@ describe('unit tests', () => {
         count: 0n,
         raffle: 0n,
         reward: 0n,
-        lastrun: 0n
+        lastrun: 0n,
+        leadingentry: 0n,
+        leadingamount: 0n
       },
       // arguments to test the target function of the test contract
       testArgs: { amt: 2n, to: '18PtRKysjGKNQJijidydDH6bmJeks2YaaLr8KhMdacAnW', ag: '14cLiRion2B2H1aFBbyPraNvWz1SUufiU2cgmWiqBNyAY' },
