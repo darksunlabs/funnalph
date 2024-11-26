@@ -15,7 +15,9 @@ const deployFunnel: DeployFunction<Settings> = async (
       count: 0n,
       raffle: 0n,
       reward: 0n,
-      lastrun: 0n
+      lastrun: 0n,
+      leadingentry: 0n,
+      leadingamount: 0n
     }
   })
   console.log('Funnel contract id: ' + result.contractInstance.contractId)

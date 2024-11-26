@@ -39,7 +39,7 @@ async function display_count() {
     // Fetch the latest state of the token contract, `mut counter` should have change
     const funnel = Funnel.at(funnelContractAddress)
     const state = await funnel.fetchState()
-    console.log(state.fields)
+    console.log(state.fields.count)
 
    
     console.log("au revoir")
@@ -80,8 +80,8 @@ async function new_entry() {
     const funnel = Funnel.at(funnelContractAddress)
     await funnel.transact.createEntry({
     	signer: wallet,
-   	args: { amt: 1n, to: '1KMwDH1yqkK51jLBmWWAS5NwbLa59sEoyhanTtXRwgUU', ag: '1KMwDH1yqkK51jLBmWWAS5NwbLa59sEoyhanTtXRwgUU',},
-   	attoAlphAmount:  ONE_ALPH + DUST_AMOUNT
+   	args: { amt: 2n, to: '1KMwDH1yqkK51jLBmWWAS5NwbLa59sEoyhanTtXRwgUU', ag: '1KMwDH1yqkK51jLBmWWAS5NwbLa59sEoyhanTtXRwgUU',},
+   	attoAlphAmount:  2n * ONE_ALPH + DUST_AMOUNT
    })
 	//100000000000000000
 	//1000000000000000
@@ -95,6 +95,6 @@ async function new_entry() {
 
 
 // Let's perform one operation at a time while commenting the others out
-display_count()
-//new_entry()
+//display_count()
+new_entry()
 
