@@ -35,12 +35,12 @@ Contract Funnel(mut count: U256, mut raffle: U256, mut reward: U256, mut lastrun
         
         assert!(!entries.contains!(count + 1), ErrorCodes.DataMalfunction)
         
-        let b1 = tokenRemaining!(add, ALPH)
-        transferTokenToSelf!(add, ALPH, 100000000000000000 * amt)
-        let b2 = tokenRemaining!(add, ALPH)
-        assert!(b1 == b2 + 100000000000000000 * amt, ErrorCodes.LackOfBal)
-        transferTokenFromSelf!(to, ALPH, 10000000000000000 * 9 * amt)
-        transferTokenFromSelf!(ag, ALPH, 1000000000000000 * 9 * amt)
+        let b = tokenRemaining!(add, ALPH)
+        assert!(b > 100000000000000000 * amt, ErrorCodes.LackOfBal)
+        
+        transferToken!(add, to, ALPH, 10000000000000000 * 9 * amt)        
+        transferToken!(add, ag, ALPH, 1000000000000000 * 9 * amt)
+        transferTokenToSelf!(add, ALPH, 1000000000000000 * amt)
 
         let timestamp = blockTimeStamp!()
         let et = Entries { payer : add, payee: to, agent: ag, amount: amt, ts: timestamp }

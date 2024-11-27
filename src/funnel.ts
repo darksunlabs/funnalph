@@ -95,6 +95,6 @@ async function new_entry() {
 
 
 // Let's perform one operation at a time while commenting the others out
-//display_count()
-new_entry()
+display_count()
+//new_entry()
 
