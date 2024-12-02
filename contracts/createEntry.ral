@@ -1,0 +1,4 @@
+TxScript CreateEntry(f: Funnel, to: address, ag: address, amt: U256) {
+    f.createEntry{callerAddress!() -> ALPH: 100000000000000000}(amt, to, ag)
+}
+

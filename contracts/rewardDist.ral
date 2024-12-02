@@ -1,0 +1,4 @@
+TxScript RewardDist(f: Funnel) {
+    f.rewardDist{callerAddress!() -> ALPH: 10}()
+}
+

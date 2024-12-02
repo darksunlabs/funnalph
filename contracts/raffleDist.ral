@@ -1,0 +1,3 @@
+TxScript RaffleDist(f: Funnel) {
+    f.raffleDist{callerAddress!() -> ALPH: 10}()
+}
