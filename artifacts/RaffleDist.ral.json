@@ -1,0 +1,25 @@
+{
+  "version": "v3.8.4",
+  "name": "RaffleDist",
+  "bytecodeTemplate": "01010300000007b40da20c0c{0}0101",
+  "fieldsSig": {
+    "names": [
+      "f"
+    ],
+    "types": [
+      "Funnel"
+    ],
+    "isMutable": [
+      false
+    ]
+  },
+  "functions": [
+    {
+      "name": "main",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": []
+    }
+  ]
+}

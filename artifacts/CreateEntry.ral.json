@@ -1,0 +1,34 @@
+{
+  "version": "v3.8.4",
+  "name": "CreateEntry",
+  "bytecodeTemplate": "0101030000000ab4{3}a2{3}{1}{2}0f0c{0}0100",
+  "fieldsSig": {
+    "names": [
+      "f",
+      "to",
+      "ag",
+      "amt"
+    ],
+    "types": [
+      "Funnel",
+      "Address",
+      "Address",
+      "U256"
+    ],
+    "isMutable": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "functions": [
+    {
+      "name": "main",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": []
+    }
+  ]
+}

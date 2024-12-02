@@ -1,5 +1,5 @@
 {
-  "fullNodeVersion": "v3.8.0",
+  "fullNodeVersion": "v3.8.4",
   "compilerOptionsUsed": {
     "ignoreUnusedConstantsWarnings": false,
     "ignoreUnusedVariablesWarnings": false,
@@ -11,6 +11,12 @@
     "skipAbstractContractCheck": false
   },
   "infos": {
+    "CreateEntry": {
+      "sourceFile": "createEntry.ral",
+      "sourceCodeHash": "85cc9633fd4f0da14ccf20bfa7884ddc4bccfb09d5c96b626e64138699f86ebb",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": ""
+    },
     "Entries": {
       "sourceFile": "funnel.ral",
       "sourceCodeHash": "29c1d8b6d5115486ef91ced45289e3645f7e61fa69b7ec6764e2e4200189ff68",
@@ -22,6 +28,18 @@
       "sourceCodeHash": "29c1d8b6d5115486ef91ced45289e3645f7e61fa69b7ec6764e2e4200189ff68",
       "bytecodeDebugPatch": "=5-2+12=2+20=1-2=2-2+d7=13-1+4=10+7e011452756e6e696e672043726561746520456e747279=326+7a7e0214696e73657274206174206d617020706174683a2000=171-1+b=10+7e011b52756e6e696e6720526166666c6520446973747269627574696f6e=351-1+d=10+7e011b52756e6e696e672052657761726420446973747269627574696f6e=344",
       "codeHashDebug": "612d476619aa26305050d8c6d20f4f3c6a90c9312c8ec6f28b4d7701ea02f429"
+    },
+    "RaffleDist": {
+      "sourceFile": "raffleDist.ral",
+      "sourceCodeHash": "b3604ae68187e05a770f1c53f7449afe44272c3351cefaf208cc9889babb444d",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": ""
+    },
+    "RewardDist": {
+      "sourceFile": "rewardDist.ral",
+      "sourceCodeHash": "fa58827c85619fe25f6fa773123ffb38e903c92517d569f343bbf6931718646c",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": ""
     }
   }
 }

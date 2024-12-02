@@ -12,5 +12,27 @@ import {
   HexString,
 } from "@alephium/web3";
 import { getContractByCodeHash } from "./contracts";
-
+import { default as CreateEntryScriptJson } from "../CreateEntry.ral.json";
+import { default as RaffleDistScriptJson } from "../RaffleDist.ral.json";
+import { default as RewardDistScriptJson } from "../RewardDist.ral.json";
 import { Entries, AllStructs } from "./types";
+
+export const CreateEntry = new ExecutableScript<{
+  f: HexString;
+  to: Address;
+  ag: Address;
+  amt: bigint;
+}>(
+  Script.fromJson(CreateEntryScriptJson, "", AllStructs),
+  getContractByCodeHash
+);
+
+export const RaffleDist = new ExecutableScript<{ f: HexString }>(
+  Script.fromJson(RaffleDistScriptJson, "", AllStructs),
+  getContractByCodeHash
+);
+
+export const RewardDist = new ExecutableScript<{ f: HexString }>(
+  Script.fromJson(RewardDistScriptJson, "", AllStructs),
+  getContractByCodeHash
+);
