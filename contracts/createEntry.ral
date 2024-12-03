@@ -3,6 +3,6 @@ to: Address,
 ag: Address, 
 amt: U256
 ) {
-    f.createEntry{callerAddress!() -> ALPH: amt}(amt, to, ag)
+    f.createEntry{callerAddress!() -> ALPH: 100000000000000000 * amt}(amt, to, ag)
 }
 
