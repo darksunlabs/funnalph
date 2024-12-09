@@ -90,20 +90,19 @@ Contract Funnel(mut count: U256, mut raffle: U256, mut reward: U256, mut lastrun
         assert!(reward > 100000000000000000, ErrorCodes.RewardLow)
         assert!(entries.contains!(count), ErrorCodes.DataMalfunction)
         
-        let run_end = lastrun + 1000
-        assert!(count >= run_end, ErrorCodes.OngoingCycle)
+        let min_run_end = lastrun + 1000
+        assert!(count >= min_run_end, ErrorCodes.OngoingCycle)
         
-        let reward_part = (reward * 1000) / (count - lastrun)
         let timestamp = blockTimeStamp!()
         let et = entries[leadingentry]
         let winner = et.agent
 
-        transferTokenFromSelf!(winner, ALPH, reward_part)
+        transferTokenFromSelf!(winner, ALPH, reward)
 	
-	lastrun = run_end
+	lastrun = count
 	let add = callerAddress!()
-        emit NewReward(add, winner, reward_part, timestamp)
-        reward = reward - reward_part
+        emit NewReward(add, winner, reward, timestamp)
+        reward = 0
         leadingentry = 0
         leadingamount = 0
     }
