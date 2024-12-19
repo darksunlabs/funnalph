@@ -4,7 +4,7 @@ Contract Funnel(mut count: U256, mut raffle: U256, mut reward: U256, mut lastrun
 
 	mapping[U256, Entries] entries
         
-
+    // the entries are the fundamental block of the funnalph smart contract
 
     event NewEntry(by: Address, to: Address, agent: Address, value: U256)
     event NewRaffle(by: Address, winner: Address, amount: U256, timestamp: U256)
@@ -48,8 +48,8 @@ Contract Funnel(mut count: U256, mut raffle: U256, mut reward: U256, mut lastrun
         entries.insert!(add, count + 1, et)
 
         count = count + 1
-	raffle = raffle + (500000000000000 * amt)
-	reward = reward + (500000000000000 * amt)
+        raffle = raffle + (500000000000000 * amt)
+        reward = reward + (500000000000000 * amt)
         emit NewEntry(add, to, ag, amt)
         
         if (amt > leadingamount) {
@@ -58,6 +58,7 @@ Contract Funnel(mut count: U256, mut raffle: U256, mut reward: U256, mut lastrun
         }
     }
     
+    // happens only when the raffle collection exceeds set value, can be called by anyone
     @using(updateFields = true, checkExternalCaller = false, preapprovedAssets = true, assetsInContract = true)
     pub fn raffleDist() -> () {
         // Debug events can be helpful for error analysis
@@ -82,6 +83,9 @@ Contract Funnel(mut count: U256, mut raffle: U256, mut reward: U256, mut lastrun
         raffle = 0
     }
     
+
+    // happens only when the reward collection reaches minimum value and there are
+    // 1000 or more entries from the previous run. can be called by anyone
     @using(updateFields = true, checkExternalCaller = false, preapprovedAssets = true, assetsInContract = true)
     pub fn rewardDist() -> () {
         // Debug events can be helpful for error analysis
